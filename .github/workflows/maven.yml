@@ -61,7 +61,7 @@ jobs:
         aws_access_key: ${{ steps.creds.outputs.aws-access-key-id }}
         aws_secret_key: ${{ steps.creds.outputs.aws-secret-access-key }}
         region: ${{ vars.AWS_REGION }}
-        application_name: 'Application Beanstalk-stack-BeanQuizApplication-GH1GHSASPUKO environments'
+        application_name: 'Application Beanstalk-stack-BeanQuizApplication-GH1GHSASPUKO'
         environment_name: 'Beanstalk-stack-Environment'
         version_label: 'v${{ github.run_number }}'
         deployment_package: 'BeanQuizRestApi/target/BeanQuizRestApi-0.0.1-SNAPSHOT.jar'
