@@ -5,6 +5,3 @@ CREATE TABLE public."User"
     "Email" character varying(255)[] NOT NULL,
     CONSTRAINT "User_PK" PRIMARY KEY ("UserID")
 );
-
-ALTER TABLE IF EXISTS public."User"
-    OWNER to postgres;
