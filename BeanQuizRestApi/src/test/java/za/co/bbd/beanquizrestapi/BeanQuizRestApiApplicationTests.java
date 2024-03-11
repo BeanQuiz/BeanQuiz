@@ -1,15 +1,13 @@
-/*
-package za.co.bbd.beanquizrestapi;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
-class BeanQuizRestApiApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
-*/
+//package za.co.bbd.beanquizrestapi;
+//
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
+//
+//@SpringBootTest
+//class BeanQuizRestApiApplicationTests {
+//
+//	@Test
+//	void contextLoads() {
+//	}
+//
+//}
