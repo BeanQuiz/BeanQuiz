@@ -34,9 +34,12 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+
+    - name: Display current directory
+      run: pwd
     
     - name: Change directory to BeanQuizRestApi
-      run: cd BeanQuiz/BeanQuizRestApi
+      run: cd ./BeanQuizRestApi
 
     - name: Display current directory
       run: pwd
