@@ -27,6 +27,9 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v3
 
+    - name: Change directory to backend
+        run: cd BeanQuizRestApi
+
     - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
