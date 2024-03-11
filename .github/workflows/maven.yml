@@ -35,20 +35,12 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Display current directory
-      run: pwd
-    
-    - name: Change directory to BeanQuizRestApi
-      run: cd ./BeanQuizRestApi
-
-    - name: Display current directory
-      run: pwd
-
-    - name: List files in directory
-      run: ls -R
-
     - name: Build with Maven
-      run: mvn -DskipTests=true package #mvn -B package --file pom.xml
+      run: |
+       pwd
+       cd BeanQuizRestApi
+       pwd
+       mvn -DskipTests=true package 
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v3
