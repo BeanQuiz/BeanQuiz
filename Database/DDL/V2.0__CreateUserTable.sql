@@ -1,3 +1,5 @@
+USE BeanQuizDB;
+
 CREATE TABLE public."User"
 (
     "UserID" serial NOT NULL,
