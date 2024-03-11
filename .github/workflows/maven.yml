@@ -64,5 +64,5 @@ jobs:
         application_name: 'Application Beanstalk-stack-BeanQuizApplication-GH1GHSASPUKO environments'
         environment_name: 'Beanstalk-stack-Environment'
         version_label: 'v${{ github.run_number }}'
-        deployment_package: 'target/BeanQuizRestApi-0.0.1-SNAPSHOT.jar'
+        deployment_package: 'BeanQuizRestApi/target/BeanQuizRestApi-0.0.1-SNAPSHOT.jar'
 
