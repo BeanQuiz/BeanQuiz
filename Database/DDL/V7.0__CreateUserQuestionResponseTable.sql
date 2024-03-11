@@ -21,6 +21,3 @@ CREATE TABLE public."UserQuestionResponse"
         ON DELETE NO ACTION
         NOT VALID
 );
-
-ALTER TABLE IF EXISTS public."UserQuestionResponse"
-    OWNER to postgres;
