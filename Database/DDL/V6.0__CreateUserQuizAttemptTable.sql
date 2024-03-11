@@ -1,5 +1,3 @@
-USE BeanQuizDB;
-
 CREATE TABLE public."UserQuizAttempt"
 (
     "AttemptID" serial NOT NULL,
