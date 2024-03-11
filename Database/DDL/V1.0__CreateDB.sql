@@ -1,3 +1,4 @@
+/*
 CREATE DATABASE "BeanQuizDB"
     WITH
     OWNER = postgres
@@ -5,3 +6,4 @@ CREATE DATABASE "BeanQuizDB"
     LOCALE_PROVIDER = 'libc'
     CONNECTION LIMIT = -1
     IS_TEMPLATE = False;
+*/
