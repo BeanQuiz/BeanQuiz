@@ -1,5 +1,3 @@
-USE BeanQuizDB;
-
 CREATE TABLE public."Option"
 (
     "OptionID" serial NOT NULL,
