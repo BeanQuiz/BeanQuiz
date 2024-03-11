@@ -10,6 +10,3 @@ CREATE TABLE public."Question"
         ON DELETE NO ACTION
         NOT VALID
 );
-
-ALTER TABLE IF EXISTS public."Question"
-    OWNER to postgres;
