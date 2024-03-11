@@ -11,6 +11,3 @@ CREATE TABLE public."Option"
         ON DELETE NO ACTION
         NOT VALID
 );
-
-ALTER TABLE IF EXISTS public."Option"
-    OWNER to postgres;

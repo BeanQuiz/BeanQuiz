@@ -18,6 +18,3 @@ CREATE TABLE public."UserQuizAttempt"
         ON DELETE NO ACTION
         NOT VALID
 );
-
-ALTER TABLE IF EXISTS public."UserQuizAttempt"
-    OWNER to postgres;
