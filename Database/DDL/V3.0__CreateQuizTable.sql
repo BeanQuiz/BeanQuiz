@@ -6,6 +6,3 @@ CREATE TABLE public."Quiz"
     "TotalQuestions" integer NOT NULL,
     CONSTRAINT "Quiz_PK" PRIMARY KEY ("QuizID")
 );
-
-ALTER TABLE IF EXISTS public."Quiz"
-    OWNER to postgres;
