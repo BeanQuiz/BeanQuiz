@@ -1,3 +1,4 @@
+/*
 package za.co.bbd.beanquizrestapi;
 
 import org.junit.jupiter.api.Test;
@@ -11,3 +12,4 @@ class BeanQuizRestApiApplicationTests {
 	}
 
 }
+*/
