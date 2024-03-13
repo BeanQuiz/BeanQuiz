@@ -9,6 +9,5 @@ import za.co.bbd.beanquizrestapi.dto.IDTO;
 public class UserQuestionResponseDTO implements IDTO {
     private Integer id;
     private Integer attemptId;
-    private Integer questionId;
     private Integer selectedOptionId;
 }

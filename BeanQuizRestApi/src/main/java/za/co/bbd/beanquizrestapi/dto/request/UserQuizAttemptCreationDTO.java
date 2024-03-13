@@ -1,11 +1,11 @@
 package za.co.bbd.beanquizrestapi.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,5 +23,5 @@ public class UserQuizAttemptCreationDTO {
 
     @NotNull
     @NotEmpty
-    private List<UserQuestionResponseCreationDTO> userQuestionResponses;
+    private List<UserQuestionResponseCreationDTO> userQuestionResponses = new ArrayList<>();
 }

@@ -3,7 +3,9 @@ package za.co.bbd.beanquizrestapi.web;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,7 +19,7 @@ import java.util.List;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<ErrorModel>> handleUserNotFound(
+    public ResponseEntity<List<ErrorModel>> handleInvalidRequestBody(
             MethodArgumentNotValidException methodArgumentNotValidException
     ) {
         List<FieldError> fieldErrors = methodArgumentNotValidException.getBindingResult().getFieldErrors();
@@ -32,6 +34,20 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(errorModelList, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<String> handleHttpMediaTypeNotSupportedException(
+            HttpMediaTypeNotSupportedException httpMediaTypeNotSupportedException
+    ) {
+        return new ResponseEntity<>(httpMediaTypeNotSupportedException.getMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> handleHttpMessageNotReadableException(
+            HttpMessageNotReadableException httpMessageNotReadableException
+    ) {
+        return new ResponseEntity<>(httpMessageNotReadableException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<String> handleBusinessException(BusinessException businessException) {
         return new ResponseEntity<>(businessException.getMessage(), businessException.getHttpStatus());

@@ -19,10 +19,6 @@ public class UserQuestionResponseEntity implements IEntity {
     private UserQuizAttemptEntity attempt;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "QuestionID", nullable = false)
-    private QuestionEntity question;
-
-    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "SelectedOptionID", nullable = false)
     private OptionEntity option;
 }
