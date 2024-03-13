@@ -1,6 +1,5 @@
 package za.co.bbd.beanquizrestapi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +25,4 @@ public class QuestionEntity implements IEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
     private List<OptionEntity> options;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
-    private List<UserQuestionResponseEntity> userQuestionResponses;
 }

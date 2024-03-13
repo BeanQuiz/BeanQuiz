@@ -33,6 +33,8 @@ public class UserQuizAttemptController {
     public ResponseEntity<String> createUserQuizAttempt(
             @Valid @RequestBody UserQuizAttemptCreationDTO userQuizAttemptCreationDTO
     ) {
+        UserDTO userDTO = userService.getUser();
+        userQuizAttemptService.saveUserQuizAttempt(userDTO.getId(), userQuizAttemptCreationDTO);
         return new ResponseEntity<>("Successfully create User Quiz Attempt.", HttpStatus.CREATED);
     }
 

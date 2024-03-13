@@ -4,18 +4,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import za.co.bbd.beanquizrestapi.converter.UserQuizAttemptConverter;
+import za.co.bbd.beanquizrestapi.dto.request.UserQuizAttemptCreationDTO;
 import za.co.bbd.beanquizrestapi.dto.response.UserQuizAttemptDTO;
-import za.co.bbd.beanquizrestapi.entity.UserQuizAttemptEntity;
+import za.co.bbd.beanquizrestapi.entity.*;
 import za.co.bbd.beanquizrestapi.exception.BusinessException;
-import za.co.bbd.beanquizrestapi.repository.UserQuizAttemptRepository;
+import za.co.bbd.beanquizrestapi.repository.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class UserQuizAttemptService {
+    private final UserRepository userRepository;
+    private final OptionRepository optionRepository;
+    private final QuestionRepository questionRepository;
+    private final QuizRepository quizRepository;
     private final UserQuizAttemptRepository userQuizAttemptRepository;
+    private final UserQuestionResponseRepository userQuestionResponseRepository;
     private final UserQuizAttemptConverter userQuizAttemptConverter;
 
     public UserQuizAttemptDTO getUserQuizAttempt(Integer userId, Integer attemptId) {
@@ -58,5 +66,60 @@ public class UserQuizAttemptService {
                 )
                 .map(userQuizAttemptConverter::convertEntityToDTO)
                 .toList();
+    }
+
+    public void saveUserQuizAttempt(Integer userId, UserQuizAttemptCreationDTO userQuizAttemptCreationDTO) {
+        QuizEntity quizEntity = quizRepository
+                .findById(userQuizAttemptCreationDTO.getQuizId())
+                .orElseThrow(() -> new BusinessException("Invalid QuizId", HttpStatus.BAD_REQUEST));
+
+        if (userQuizAttemptCreationDTO.getUserQuestionResponses().size() != quizEntity.getTotalQuestions()) {
+            throw new BusinessException("Invalid number of question responses provided", HttpStatus.BAD_REQUEST);
+        }
+
+        AtomicReference<Integer> score = new AtomicReference<>(0);
+        Integer quizId = quizEntity.getId();
+
+        Stream<OptionEntity> selectedOptions = userQuizAttemptCreationDTO
+                .getUserQuestionResponses()
+                .stream()
+                .map(option -> {
+                    OptionEntity optionEntity = optionRepository
+                            .findById(option.getSelectedOptionId())
+                            .orElseThrow(() -> new BusinessException(
+                                            "Invalid selectedOptionId provided",
+                                            HttpStatus.BAD_REQUEST
+                                    )
+                            );
+                    if (optionEntity.getIsCorrect()) {
+                        score.updateAndGet(v -> v + 1);
+                    }
+
+                    if (!Objects.equals(optionEntity.getQuestion().getQuiz().getId(), quizId)) {
+                        throw new BusinessException(
+                                "Invalid selectedOptionId provided",
+                                HttpStatus.BAD_REQUEST
+                        );
+                    }
+
+                    return optionEntity;
+                });
+
+        UserEntity userEntity = userRepository.findById(userId).get();
+
+        UserQuizAttemptEntity userQuizAttemptEntity = new UserQuizAttemptEntity();
+        userQuizAttemptEntity.setUser(userEntity);
+        userQuizAttemptEntity.setQuiz(quizEntity);
+        userQuizAttemptEntity.setStartTimestamp(userQuizAttemptCreationDTO.getStartTimestamp());
+        userQuizAttemptEntity.setEndTimestamp(userQuizAttemptCreationDTO.getEndTimestamp());
+        userQuizAttemptEntity.setScore(score.get());
+        userQuizAttemptRepository.save(userQuizAttemptEntity);
+
+        selectedOptions.peek(optionEntity -> {
+            UserQuestionResponseEntity userQuestionResponseEntity = new UserQuestionResponseEntity();
+            userQuestionResponseEntity.setAttempt(userQuizAttemptEntity);
+            userQuestionResponseEntity.setOption(optionEntity);
+            userQuestionResponseRepository.save(userQuestionResponseEntity);
+        });
     }
 }
