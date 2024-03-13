@@ -10,6 +10,13 @@ Parameters:
     Description: Name of an existing EC2 keypair to enable SSH access to the instance.
     Type: AWS::EC2::KeyPair::KeyName
     ConstraintDescription: must be the name of an existing EC2 keypair.
+  DBMasterUsername:
+    Description: Master username for the RDS instance
+    Type: String
+  DBMasterUserPassword:
+    Description: Master user password for the RDS instance
+    Type: String
+    NoEcho: true  # Hides the password during stack creation/update
 
 Resources:
   MyVPC:
@@ -106,8 +113,8 @@ Resources:
       Engine: postgres
       EngineVersion: 13.9
       DBInstanceIdentifier: MyDBInstance
-      MasterUsername: bbdbeanquizuser
-      MasterUserPassword: beanquiz12
+      MasterUsername: !Ref DBMasterUsername
+      MasterUserPassword: !Ref DBMasterUserPassword
       DBSubnetGroupName: !Ref MyDBSubnetGroup
       VPCSecurityGroups:
         - !Ref MySecurityGroup
