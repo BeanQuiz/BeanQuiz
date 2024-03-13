@@ -1,7 +1,5 @@
 package za.co.bbd.beanquizcli.quizcommand;
 
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
 import za.co.bbd.beanquizcli.quizservice.QuizService;
 import za.co.bbd.beanquizcli.userservice.UserService;
 

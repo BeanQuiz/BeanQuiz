@@ -8,8 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import za.co.bbd.beanquizcli.quizservice.Question;
 import za.co.bbd.beanquizcli.quizservice.QuizService;
+import za.co.bbd.beanquizcli.quizservice.model.Question;
 
 public class QuizServiceTest {
 
