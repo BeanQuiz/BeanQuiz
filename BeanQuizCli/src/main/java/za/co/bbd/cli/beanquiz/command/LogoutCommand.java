@@ -4,7 +4,7 @@ import za.co.bbd.cli.beanquiz.Global;
 
 public class LogoutCommand extends Command {
     public LogoutCommand() {
-        super("o", "Logout");
+        super("X", "Logout");
     }
 
     @Override

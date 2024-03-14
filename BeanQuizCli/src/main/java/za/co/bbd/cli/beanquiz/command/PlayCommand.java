@@ -11,7 +11,7 @@ import java.util.List;
 
 public class PlayCommand extends Command {
     public PlayCommand() {
-        super("t", "Take Quiz");
+        super("T", "Take Quiz");
     }
 
     @Override

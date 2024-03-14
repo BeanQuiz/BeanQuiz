@@ -28,4 +28,6 @@ public abstract class Command {
     public Boolean execute() {
         return true;
     }
+
+    public String getPrefix() {return "";}
 }

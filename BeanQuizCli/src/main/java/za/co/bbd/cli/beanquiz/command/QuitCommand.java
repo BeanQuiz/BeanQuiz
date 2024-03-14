@@ -2,7 +2,7 @@ package za.co.bbd.cli.beanquiz.command;
 
 public class QuitCommand extends Command {
     public QuitCommand() {
-        super("q", "Quit");
+        super("Q", "Quit");
     }
 
     @Override

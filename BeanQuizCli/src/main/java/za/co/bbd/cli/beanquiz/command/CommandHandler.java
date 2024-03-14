@@ -11,7 +11,7 @@ public class CommandHandler {
 
     public Command getCommand(String identifier) {
         for (Command command : commands) {
-            if (command.enabled() && identifier.equals(command.getIdentifier())) {
+            if (command.enabled() && identifier.equalsIgnoreCase(command.getIdentifier())) {
                 return command;
             }
         }

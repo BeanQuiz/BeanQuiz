@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class LoginCommand extends Command {
 
     public LoginCommand() {
-        super("l", "Login");
+        super("L", "Login");
     }
 
     @Override

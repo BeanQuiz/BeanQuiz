@@ -4,7 +4,7 @@ import za.co.bbd.cli.beanquiz.Global;
 
 public class BackCommand extends Command {
     public BackCommand() {
-        super("b", "Back to menu");
+        super("B", "Back to menu");
     }
 
 
@@ -12,5 +12,10 @@ public class BackCommand extends Command {
     public Boolean execute() {
         Global.commands = Global.defaultCommands;
         return super.execute();
+    }
+
+    @Override
+    public String getPrefix() {
+        return "\n";
     }
 }

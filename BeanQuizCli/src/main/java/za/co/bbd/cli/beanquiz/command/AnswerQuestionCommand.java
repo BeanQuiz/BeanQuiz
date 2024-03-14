@@ -17,8 +17,10 @@ public class AnswerQuestionCommand extends Command {
     @Override
     public Boolean execute() {
         List<Command> commands = new ArrayList<>();
-
-        commands.add(new DisplayQuestionCommand("Question " + this.getIdentifier(), this.getDescription()));
+        String questionText = String.format("Question %s: %s", this.getIdentifier(), this.getDescription());
+        String dashes = "-".repeat(questionText.length()+2);
+        String fullText = String.format("%s\n%s", this.getDescription(), dashes);
+        commands.add(new DisplayQuestionCommand("Question " + this.getIdentifier(), fullText));
 
     try {
             HttpResponse<JsonNode> response = Unirest
