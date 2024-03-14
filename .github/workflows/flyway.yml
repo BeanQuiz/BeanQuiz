@@ -19,7 +19,7 @@ jobs:
       - name: Flyway Validate and Migrate
         uses: joshuaavalon/flyway-action@v3.0.0
         with:
-          url: ${{ secrets.DB_URL }}
+          url: jdbc:postgresql://${{ secrets.DB_URL }}/BeanQuizDB
           user: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           locations: filesystem:./Database
