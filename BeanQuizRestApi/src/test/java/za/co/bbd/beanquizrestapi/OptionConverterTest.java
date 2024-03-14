@@ -1,16 +1,13 @@
 package za.co.bbd.beanquizrestapi;
 
-import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 import za.co.bbd.beanquizrestapi.converter.OptionConverter;
 import za.co.bbd.beanquizrestapi.dto.response.OptionDTO;
 import za.co.bbd.beanquizrestapi.entity.OptionEntity;
 import za.co.bbd.beanquizrestapi.entity.QuestionEntity;
 
-import static org.junit.Assert.*;
-
-@SpringBootTest
 public class OptionConverterTest {
 
     @Test
