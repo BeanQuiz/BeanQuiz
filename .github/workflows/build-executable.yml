@@ -13,14 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK 21
+      - name: Install sdkman
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          sudo wget https://github.com/AdoptOpenJDK/openjdk16-binaries/releases/download/jdk-16.0.2%2B7/OpenJDK16U-jdk_x64_linux_hotspot_16.0.2_7.tar.gz
-          sudo tar xfvz OpenJDK16U-jdk_x64_linux_hotspot_16.0.2_7.tar.gz -C /usr/local
-          sudo update-alternatives --install /usr/bin/java java /usr/local/jdk-16.0.2_7/bin/java 100
-          java -version
+          curl -s "https://get.sdkman.io" | bash
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+      - name: Install JDK 21
+        run: |
+          sdk install java 21.0.0-open
 
       - name: Build with Maven
         run: mvn -B package --file BeanQuizCli/pom.xml
