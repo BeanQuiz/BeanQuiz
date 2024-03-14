@@ -12,8 +12,6 @@ import za.co.bbd.beanquizrestapi.repository.*;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -61,8 +59,8 @@ public class UserQuizAttemptService {
                 .stream()
                 .filter(userQuizAttemptEntity ->
                         Objects.equals(userId, userQuizAttemptEntity.getUser().getId())
-                                &&
-                                Objects.equals(quizId, userQuizAttemptEntity.getQuiz().getId())
+                        &&
+                        Objects.equals(quizId, userQuizAttemptEntity.getQuiz().getId())
                 )
                 .map(userQuizAttemptConverter::convertEntityToDTO)
                 .toList();
@@ -77,10 +75,9 @@ public class UserQuizAttemptService {
             throw new BusinessException("Invalid number of question responses provided", HttpStatus.BAD_REQUEST);
         }
 
-        AtomicReference<Integer> score = new AtomicReference<>(0);
         Integer quizId = quizEntity.getId();
 
-        Stream<OptionEntity> selectedOptions = userQuizAttemptCreationDTO
+        List<OptionEntity> selectedOptions = userQuizAttemptCreationDTO
                 .getUserQuestionResponses()
                 .stream()
                 .map(option -> {
@@ -91,9 +88,6 @@ public class UserQuizAttemptService {
                                             HttpStatus.BAD_REQUEST
                                     )
                             );
-                    if (optionEntity.getIsCorrect()) {
-                        score.updateAndGet(v -> v + 1);
-                    }
 
                     if (!Objects.equals(optionEntity.getQuestion().getQuiz().getId(), quizId)) {
                         throw new BusinessException(
@@ -103,7 +97,9 @@ public class UserQuizAttemptService {
                     }
 
                     return optionEntity;
-                });
+                }).toList();
+
+        Integer score = Math.toIntExact(selectedOptions.stream().filter(OptionEntity::getIsCorrect).count());
 
         UserEntity userEntity = userRepository.findById(userId).get();
 
@@ -112,10 +108,10 @@ public class UserQuizAttemptService {
         userQuizAttemptEntity.setQuiz(quizEntity);
         userQuizAttemptEntity.setStartTimestamp(userQuizAttemptCreationDTO.getStartTimestamp());
         userQuizAttemptEntity.setEndTimestamp(userQuizAttemptCreationDTO.getEndTimestamp());
-        userQuizAttemptEntity.setScore(score.get());
+        userQuizAttemptEntity.setScore(score);
         userQuizAttemptRepository.save(userQuizAttemptEntity);
 
-        selectedOptions.peek(optionEntity -> {
+        selectedOptions.stream().peek(optionEntity -> {
             UserQuestionResponseEntity userQuestionResponseEntity = new UserQuestionResponseEntity();
             userQuestionResponseEntity.setAttempt(userQuizAttemptEntity);
             userQuestionResponseEntity.setOption(optionEntity);
