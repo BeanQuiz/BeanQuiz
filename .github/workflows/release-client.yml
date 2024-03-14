@@ -82,6 +82,7 @@ jobs:
           cd BeanQuizCli
           mvn package
           jpackage --input target --name beanquiz --main-jar BeanQuizCli-1.0-SNAPSHOT.jar --type exe --win-console
+          ls
 
       - name: Upload installer
         uses: actions/upload-release-asset@v1
