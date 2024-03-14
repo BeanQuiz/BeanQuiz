@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -25,11 +25,10 @@ jobs:
         run: jar -cvfe beanquizapp.jar za.co.bbd.cli.beanquiz.App .
 
       - name: Create Windows Executable
-        run: |
-          jpackage --input . --main-jar beanquizapp.jar --type exe --name BeanQuizApp
+        run: jpackage --input . --main-jar beanquizapp.jar --type exe --name BeanQuizApp
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: bean-quiz-executable
-          path: beanquizapp.jar, BeanQuizApp.exe
+          path: BeanQuizApp.exe
