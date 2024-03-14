@@ -41,6 +41,7 @@ jobs:
          pwd
          mvn package 
          jpackage --input target/ --name beanquiz --main-jar BeanQuizCli-1.0-SNAPSHOT.jar --type deb
+         ls
       
       - name: Upload Artifact
         uses: actions/upload-release-asset@v1
@@ -48,7 +49,7 @@ jobs:
          GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./beanquiz_1.0_amd64.deb
+          asset_path: beanquiz_1.0_amd64.deb
           asset_name: beanquiz_1.0_amd64.deb
           asset_content_type: application/vnd.debian.binary-package
 
@@ -58,7 +59,7 @@ jobs:
          GITHUB_TOKEN: ${{ github.token }}
         with:
          upload_url: ${{ steps.create_release.outputs.upload_url }}
-         asset_path: ./instructions.txt  # Adjust the path to your instruction file
+         asset_path: instructions.txt  # Adjust the path to your instruction file
          asset_name: instructions.txt
          asset_content_type: text/plain  # Adjust content type if needed
     
