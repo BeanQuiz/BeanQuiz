@@ -32,6 +32,9 @@ public class ProfileCommand extends Command{
                 new BackCommand()
         );
 
+        if (!Global.rankDescription.isBlank()) {
+            System.out.println("\u001B[34mFun Fact: \u001B[0m" + Global.rankDescription);
+        }
         return super.execute();
     }
 }

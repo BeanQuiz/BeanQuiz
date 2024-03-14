@@ -1,6 +1,8 @@
 package za.co.bbd.cli.beanquiz;
 
+import com.google.gson.internal.bind.util.ISO8601Utils;
 import kong.unirest.HttpResponse;
+import kong.unirest.HttpStatus;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import za.co.bbd.cli.beanquiz.command.Command;
@@ -37,7 +39,7 @@ public class Output {
 
     public static void printLoggedInUser() {
         if (!Global.user.isBlank()) {
-            System.out.println("Logged In User: " + Global.user);
+            System.out.println("\u001B[32mUser: \u001B[0m" + Global.user);
             return;
         }
 
@@ -58,7 +60,38 @@ public class Output {
             Global.user = response.getBody().getObject().getString("username");
 
             if (response.isSuccess()) {
-                System.out.println("Logged In User: " + Global.user);
+                System.out.println("\u001B[32mUser: \u001B[0m" + Global.user);
+            }
+
+        } catch (Exception e) {
+        }
+    }
+
+    public static void printRank() {
+        if (!Global.rankTitle.isBlank()) {
+            System.out.println("\u001B[32mRank: \u001B[0m" + Global.rankTitle);
+            return;
+        }
+
+        if (Global.accessToken.isBlank()) {
+            return;
+        }
+
+        try {
+            HttpResponse<JsonNode> rankResponse = Unirest
+                    .get(Global.API_DOMAIN + "api/private/rank")
+                    .header("Authorization", Global.accessToken)
+                    .asJson();
+
+            if (rankResponse.getStatus() != 200) {
+                return;
+            }
+
+            Global.rankTitle = rankResponse.getBody().getObject().getString("name");
+            Global.rankDescription = rankResponse.getBody().getObject().getString("funFact");
+
+            if (200 == rankResponse.getStatus()) {
+                System.out.println("\u001B[32mRank: \u001B[0m" + Global.rankTitle);
             }
 
         } catch (Exception e) {

@@ -15,6 +15,7 @@ public class App {
 
         while (shouldContinue) {
             Output.printLoggedInUser();
+            Output.printRank();
 
             Output.printCommands();
 
