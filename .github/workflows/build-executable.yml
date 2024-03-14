@@ -1,4 +1,4 @@
-name: Build and Create Executable
+name: Build, Package, and Create Runnable JRE
 
 on:
   push:
@@ -23,13 +23,18 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file BeanQuizCli/pom.xml
 
-      - name: Create Runtime Image with JLink
+      - name: Create Runnable JRE
         run: |
-          mkdir -p target/image
-          jlink --add-modules java.base,java.sql,java.desktop,java.logging,java.management,java.naming,java.net.http,java.security.jgss,jakarta.xml.bind --output target/image --strip-debug --compress 2
+          # Get the name of the JAR file dynamically
+          JAR_FILE=$(find target -name "*.jar" | head -n 1)
+          jlink --add-modules "$JAR_FILE" --output my-runtime-image
+          # Optional: Create an executable binary
+          jlink --add-modules "$JAR_FILE" --output my-runtime-image --launcher
 
-      - name: Upload Artifact
+      - name: Archive JAR and JRE
         uses: actions/upload-artifact@v2
         with:
-          name: bean-quiz-runtime-image
-          path: target/image
+          name: my-artifacts
+          path: |
+            target/*.jar
+            my-runtime-image
