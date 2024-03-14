@@ -42,9 +42,13 @@ jobs:
          mvn package 
          jpackage --input target/ --name beanquiz --main-jar BeanQuizCli-1.0-SNAPSHOT.jar --type deb
          ls
+
+      - name: temp
+        run: |
+         pwd
+         ls
          
-      - id: upload-installer
-        name: Upload installer
+      - name: Upload installer
         uses: actions/upload-artifact@v3
         with:
           path: ./beanquiz_1.0_amd64.deb
@@ -61,12 +65,18 @@ jobs:
       #     asset_content_type: application/vnd.debian.binary-package
 
       - name: Upload Instruction File
-        uses: actions/upload-release-asset@v1
-        env:
-         GITHUB_TOKEN: ${{ github.token }}
+        uses: actions/upload-artifact@v3
         with:
-         upload_url: ${{ steps.create_release.outputs.upload_url }}
-         asset_path: instructions.txt  # Adjust the path to your instruction file
-         asset_name: instructions.txt
-         asset_content_type: text/plain  # Adjust content type if needed
+          path: ./instructions.txt
+          name: instruction
+      
+      # - name: Upload Instruction File
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #    GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #    upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #    asset_path: instructions.txt  # Adjust the path to your instruction file
+      #    asset_name: instructions.txt
+      #    asset_content_type: text/plain  # Adjust content type if needed
     
