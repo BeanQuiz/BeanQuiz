@@ -1,0 +1,31 @@
+name: Build and Create Executable
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v1
+        with:
+          java-version: 21
+
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: Create Executable JAR
+        run: jar -cvfe beanquizapp.jar za.co.bbd.cli.beanquiz.App .
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: bean-quiz-executable
+          path: beanquizapp.jar
