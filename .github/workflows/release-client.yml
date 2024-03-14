@@ -8,7 +8,7 @@ on:
     workflow_dispatch:
 
 jobs:
-  build:
+  build-linux-installer:
       runs-on: ubuntu-latest
       permissions:
         contents: write
@@ -60,3 +60,34 @@ jobs:
           asset_path: BeanQuizCli/instructions.txt
           asset_name: instruction.txt
           asset_content_type: text/plain
+          
+  build-windows-installer:
+    name: Build Installer on Windows
+    runs-on: windows-latest
+    permissions:
+        contents: write
+        
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build artifacts
+        run: |
+          cd BeanQuizCli
+          mvn package
+          jpackage --input target --name beanquiz --main-jar BeanQuizCli-1.0-SNAPSHOT.jar --type exe --win-console
+
+      - name: Upload installer
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: BeanQuizCli/beanquiz-1.0.exe
+          asset_name: beanquiz-1.0.exe
+          asset_content_type: application/x-executable
+
