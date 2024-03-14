@@ -1,0 +1,11 @@
+To install (only linux machines):
+
+sudo dpkg -i beanquiz_1.0_amd64.deb
+
+Add the package to the path using 
+
+export PATH=$PATH:/opt/beanstalkcli2/bin
+
+Then run below cmd on your terminal
+
+beanquiz
