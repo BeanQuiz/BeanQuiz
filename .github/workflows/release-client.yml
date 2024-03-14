@@ -9,8 +9,9 @@ on:
 
 jobs:
   build:
-      permissions: write-all
       runs-on: ubuntu-latest
+      permissions:
+        contents: write
 
       steps:
       - name: Checkout repo
