@@ -28,6 +28,7 @@ public class Global {
             new LoginCommand(),
             new LogoutCommand(),
             new PlayCommand(),
+            new ViewQuizHistoryCommand(),
             new QuitCommand()
     );
 
