@@ -13,35 +13,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install sdkman
-        run: |
-          curl -s "https://get.sdkman.io" | bash
-          source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-      - name: Setup SDKMAN in the current shell
-        run: source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-      - name: Install JDK 21
-        run: |
-          sdk install java 21.0.0-open
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
 
       - name: Build with Maven
         run: mvn -B package --file BeanQuizCli/pom.xml
 
-      - name: Create Executable JAR
-        run: jar -cvfe beanquizapp.jar za.co.bbd.cli.beanquiz.App .
-
-      - name: Create Windows Executable
+      - name: Create Runtime Image with JLink
         run: |
-          sudo apt-get install -y libx11-dev libxext-dev libxrender-dev libxtst-dev libxt-dev libxrandr-dev libxi-dev
-          sudo apt-get install -y libgtk2.0-dev libpulse-dev libfreetype6-dev libasound2-dev
-          jpackage --input . --main-jar beanquizapp.jar --type exe --name BeanQuizApp
-
-      - name: List files
-        run: ls -l
+          mkdir -p target/image
+          jlink --add-modules java.base,java.sql,java.desktop,java.logging,java.management,java.naming,java.net.http,java.security.jgss,java.xml,java.xml.bind --output target/image --strip-debug --compress 2
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: bean-quiz-executable
-          path: beanquizapp.jar, BeanQuizApp.exe
+          name: bean-quiz-runtime-image
+          path: target/image
