@@ -8,6 +8,7 @@ import za.co.bbd.cli.beanquiz.Global;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +30,19 @@ public class ViewQuizHistoryCommand extends Command{
 
     @Override
     public Boolean execute() {
-        HttpResponse<JsonNode> response = Unirest
-                .get(Global.API_DOMAIN + "user-quiz-attempts")
+        HttpResponse<JsonNode> attemptsResponse = Unirest
+                .get(Global.API_DOMAIN + "api/private/user-quiz-attempts")
+                .header("Authorization", Global.accessToken)
                 .asJson();
 
-        if (!response.isSuccess()) {
+        if (!attemptsResponse.isSuccess()) {
             System.out.println("An error occurred...");
             return true;
         }
 
-        System.out.format("%-15s%-15s%-15s%\n", "QuizID", "Duration", "Score");
+        System.out.format("\u001B[34m%-15s%-15s%-15s%n", "QuizID", "Duration", "Score\u001B[0m");
 
-        for (Object previousQuizzes : response.getBody().getArray()) {
+        for (Object previousQuizzes : attemptsResponse.getBody().getArray()) {
             JSONObject obj = (JSONObject) previousQuizzes;
             String id = obj.getString("id");
             String userId = obj.getString("userId");
@@ -49,7 +51,21 @@ public class ViewQuizHistoryCommand extends Command{
             String endTimestamp = obj.getString("endTimestamp");
             String score = obj.getString("score");
 
-            System.out.format("%-15d%-15s%-15s%\n", id, getDurationFromTimestamps(startTimestamp, endTimestamp), score);
+            HttpResponse<JsonNode> quizDetailsResponse = Unirest
+                    .get(Global.API_DOMAIN + "api/public/quiz/" + quizId)
+                    .asJson();
+
+            if (!quizDetailsResponse.isSuccess()) {
+                System.out.println("An error occurred...");
+                return true;
+            }
+
+            JSONObject objQuizDetails = (JSONObject) quizDetailsResponse.getBody().getObject();
+            String quizName = objQuizDetails.getString("title");
+            String totalQuestions = objQuizDetails.getString("totalQuestions");
+
+
+            System.out.format("%-15s%-15s%-15s%n", quizName, getDurationFromTimestamps(startTimestamp, endTimestamp), score + "/" + totalQuestions);
         }
 
         List<Command> commands = new ArrayList<>();
@@ -60,16 +76,15 @@ public class ViewQuizHistoryCommand extends Command{
     }
 
     private static String getDurationFromTimestamps(String startTimestamp, String endTimestamp){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSX");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
-        LocalDateTime startTime = LocalDateTime.parse(startTimestamp, formatter);
-        LocalDateTime endTime = LocalDateTime.parse(endTimestamp, formatter);
+        OffsetDateTime startTime = OffsetDateTime.parse(startTimestamp, formatter);
+        OffsetDateTime endTime = OffsetDateTime.parse(endTimestamp, formatter);
 
         Duration duration = Duration.between(startTime, endTime);
 
-        long hours = duration.toHours();
         long minutes = duration.toMinutesPart();
         long seconds = duration.toSecondsPart();
-        return hours + ":" + minutes + ":" + seconds;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 }
