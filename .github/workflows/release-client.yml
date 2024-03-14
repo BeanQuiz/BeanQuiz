@@ -41,14 +41,21 @@ jobs:
          mvn package 
          jpackage --input target/ --name beanquiz --main-jar BeanQuizCli-1.0-SNAPSHOT.jar --type deb
          
-      - name: Upload installer
-        uses: actions/upload-artifact@v3
+      - name: Upload artifacts to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          path: BeanQuizCli/beanquiz_1.0_amd64.deb
-          name: beanquiz_1.0_amd64.deb
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: BeanQuizCli/beanquiz_1.0_amd64.deb
+          asset_name: beanquiz_1.0_amd64.deb
+          asset_content_type: application/vnd.debian.binary-package
 
       - name: Upload Instruction File
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          path: BeanQuizCli/instructions.txt
-          name: instruction.txt   
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: BeanQuizCli/instructions.txt
+          asset_name: instruction.txt 
