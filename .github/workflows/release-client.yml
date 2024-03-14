@@ -1,0 +1,65 @@
+name: release client
+
+on:
+    push:
+      branches: [ "main" ]
+      paths:
+        - 'BeanQuizCli/**'
+    workflow_dispatch:
+
+jobs:
+  build:
+      permissions: write-all
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+            GITHUB_TOKEN: ${{ github.token }}
+        with:
+            tag_name: v${{ github.run_number }}
+            release_name: Release ${{ github.run_number }}
+            draft: false
+            prerelease: false
+      
+      - name: build artifacts
+        run: |
+         pwd
+         cd BeanQuizCli
+         pwd
+         mvn package 
+         jpackage --input target/ --name beanquiz --main-jar BeanQuizCli-1.0-SNAPSHOT.jar --type deb
+         ls
+      
+      - name: Upload Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+         GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: beanquiz_1.0_amd64.deb
+          asset_name: beanquiz_1.0_amd64.deb
+          asset_content_type: application/vnd.debian.binary-package
+
+      - name: Upload Instruction File
+        uses: actions/upload-release-asset@v1
+        env:
+         GITHUB_TOKEN: ${{ github.token }}
+        with:
+         upload_url: ${{ steps.create_release.outputs.upload_url }}
+         asset_path: instructions.txt  # Adjust the path to your instruction file
+         asset_name: instructions.txt
+         asset_content_type: text/plain  # Adjust content type if needed
+    

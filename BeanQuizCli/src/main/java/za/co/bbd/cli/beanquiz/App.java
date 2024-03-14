@@ -5,7 +5,7 @@ import za.co.bbd.cli.beanquiz.command.CommandHandler;
 import java.util.Scanner;
 
 public class App {
-    private final Scanner scanner = new Scanner(System.in);
+
     private final CommandHandler commandHandler = new CommandHandler();
 
     private void run() {
@@ -22,7 +22,7 @@ public class App {
 
             Output.printEnterCommand();
 
-            String userInput = scanner.nextLine();
+            String userInput = Global.scanner.nextLine();
             try {
                 shouldContinue = commandHandler.getCommand(userInput).execute();
             } catch (Exception e) {
@@ -31,7 +31,7 @@ public class App {
             }
         }
 
-        scanner.close();
+        Global.scanner.close();
     }
 
     public static void main(String[] args) {
