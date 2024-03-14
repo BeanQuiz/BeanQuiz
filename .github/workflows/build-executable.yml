@@ -19,7 +19,7 @@ jobs:
           java-version: 21
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B package --file BeanQuizCli/pom.xml
 
       - name: Create Executable JAR
         run: jar -cvfe beanquizapp.jar za.co.bbd.cli.beanquiz.App .
