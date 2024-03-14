@@ -6,6 +6,10 @@ name: Build, Package, and Create Runnable JRE
 #       - main
 
 on:
+  push:
+    branches: [ "fix/cli-package-pipeline" ]
+    paths:
+      - 'BeanQuizCli/**'
   workflow_dispatch:
 
 jobs:
