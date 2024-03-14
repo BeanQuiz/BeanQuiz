@@ -13,10 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v1
+      - name: Set up JDK 16
+        uses: actions/setup-java@v2
         with:
-          java-version: 21
+          java-version: '16'
+          distribution: 'adopt'
 
       - name: Build with Maven
         run: mvn -B package --file BeanQuizCli/pom.xml
@@ -24,16 +25,8 @@ jobs:
       - name: Create Executable JAR
         run: jar -cvfe beanquizapp.jar za.co.bbd.cli.beanquiz.App .
 
-      - name: Download Launch4j
-        run: |
-          wget https://sourceforge.net/projects/launch4j/files/launch4j-3/3.14/launch4j-3.14-linux-x64.tgz/download -O launch4j.tgz
-          tar -xzf launch4j.tgz
-          chmod +x launch4j-3.14-linux-x64/launch4j
-          sudo mv launch4j-3.14-linux-x64/launch4j /usr/local/bin/
-          rm -rf launch4j-3.14-linux-x64 launch4j.tgz
-
       - name: Create Windows Executable
-        run: launch4j --jar beanquizapp.jar --header-type console --outfile BeanQuizApp.exe
+        run: jpackage --input . --main-jar beanquizapp.jar --type exe --name BeanQuizApp
 
       - name: List files
         run: ls -l
