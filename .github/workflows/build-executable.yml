@@ -18,6 +18,9 @@ jobs:
           curl -s "https://get.sdkman.io" | bash
           source "$HOME/.sdkman/bin/sdkman-init.sh"
 
+      - name: Setup SDKMAN in the current shell
+        run: source "$HOME/.sdkman/bin/sdkman-init.sh"
+
       - name: Install JDK 21
         run: |
           sdk install java 21.0.0-open
