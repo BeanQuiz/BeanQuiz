@@ -24,8 +24,13 @@ jobs:
       - name: Create Executable JAR
         run: jar -cvfe beanquizapp.jar za.co.bbd.cli.beanquiz.App .
 
-      - name: Install Launch4j
-        run: sudo apt-get install -y launch4j
+      - name: Download Launch4j
+        run: |
+          wget https://sourceforge.net/projects/launch4j/files/launch4j-3/3.14/launch4j-3.14-linux-x64.tgz/download -O launch4j.tgz
+          tar -xzf launch4j.tgz
+          chmod +x launch4j-3.14-linux-x64/launch4j
+          sudo mv launch4j-3.14-linux-x64/launch4j /usr/local/bin/
+          rm -rf launch4j-3.14-linux-x64 launch4j.tgz
 
       - name: Create Windows Executable
         run: launch4j --jar beanquizapp.jar --header-type console --outfile BeanQuizApp.exe
