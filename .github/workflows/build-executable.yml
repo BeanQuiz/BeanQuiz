@@ -25,7 +25,7 @@ jobs:
         run: jar -cvfe beanquizapp.jar za.co.bbd.cli.beanquiz.App .
 
       - name: Create Windows Executable
-        run: jpackage --input . --main-jar beanquizapp.jar --win-shortcut
+        run: jpackage --input . --main-jar beanquizapp.jar
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
