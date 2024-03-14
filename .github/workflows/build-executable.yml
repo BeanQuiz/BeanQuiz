@@ -7,7 +7,7 @@ name: Build, Package, and Create Runnable JRE
 
 on:
   push:
-    branches: [ "fix/cli-package-pipeline" ]
+    branches: [ "main" ]
     paths:
       - 'BeanQuizCli/**'
   workflow_dispatch:
@@ -27,7 +27,11 @@ jobs:
           distribution: 'corretto'
 
       - name: Build with Maven
-        run: mvn -B package --file BeanQuizCli/pom.xml
+        run: |
+          pwd
+          cd BeanQuizCli
+          pwd
+          mvn package -B
         
       # - name: Create Runnable JRE
       #   run: |
@@ -36,7 +40,7 @@ jobs:
       #     jlink --add-modules "$JAR_FILE" --output my-runtime-image
       #     # Optional: Create an executable binary
       #     jlink --add-modules "$JAR_FILE" --output my-runtime-image --launcher
-      - run: mkdir staging && cp target/*.jar staging
+      - run: mkdir staging && cp BeanQuizCli/target/*.jar staging
   
 
       - name: Archive JAR and JRE
