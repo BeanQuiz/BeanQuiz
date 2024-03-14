@@ -60,19 +60,16 @@ Resources:
           ToPort: 5432
           CidrIp: 0.0.0.0/0
 
-  MyEC2InstanceSecurityGroup:
+  ElasticBeanstalkSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow traffic to RDS instance
+      GroupName: ElasticBeanstalkSecurityGroup
+      GroupDescription: Security Group for all ElasticBeanstalk Environments
       VpcId: !Ref MyVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 22  # SSH default port
-          ToPort: 22
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 8080  # SSH default port
-          ToPort: 8080
+          FromPort: "5000"
+          ToPort: "5000"
           CidrIp: 0.0.0.0/0
 
   MyInternetGateway:
@@ -119,11 +116,65 @@ Resources:
       VPCSecurityGroups:
         - !Ref MySecurityGroup
 
-  MyEC2InstanceRole:
-    Type: AWS::IAM::Role
+  BeanQuizApplication:
+    Type: AWS::ElasticBeanstalk::Application
     Properties:
+      Description: "BeanQuiz Elastic Beanstalk Application"
+
+  ApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName: !Ref BeanQuizApplication
+      Description: AWS ElasticBeanstalk Sample Application Version
+      SourceBundle:
+        S3Bucket: bean-quiz-bucket
+        S3Key: demo-0.0.1-SNAPSHOT.jar
+
+  BeanQuizApplicationEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref BeanQuizApplication
+      Description: ElasticBeanstalk Environment
+      EnvironmentName: !Sub ${AWS::StackName}-BeanQuiz
+      TemplateName: !Ref ConfigurationTemplate
+
+  ConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName: !Ref BeanQuizApplication
+      Description: AWS ElasticBeanstalk BeanQuiz Configuration Template
+      OptionSettings:
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: '1'
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: '1'
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: SingleInstance 
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref BeanQuizInstanceProfile
+        - Namespace: aws:ec2:vpc
+          OptionName: VPCId
+          Value: !Ref MyVPC
+        - Namespace: aws:ec2:vpc
+          OptionName: Subnets
+          Value: !Ref PublicSubnet
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SecurityGroups
+          Value: !Ref ElasticBeanstalkSecurityGroup
+        - Namespace: aws:ec2:vpc
+          OptionName: AssociatePublicIpAddress
+          Value: true
+      SolutionStackName: 64bit Amazon Linux 2023 v4.2.1 running Corretto 21
+
+  BeanQuizInstanceRole:
+    Type: AWS::IAM::Role
+    Properties: 
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: 2012-10-17
         Statement:
           - Effect: Allow
             Principal:
@@ -131,53 +182,22 @@ Resources:
                 - ec2.amazonaws.com
             Action:
               - sts:AssumeRole
-      Path: "/"
-      Policies:
-        - PolicyName: root
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action: 's3:*'
-                Resource: 'arn:aws:s3:::bean-quiz-bucket/*'
-              - Effect: Allow
-                Action: 's3:*ListBucket'
-                Resource: 'arn:aws:s3:::bean-quiz-bucket'
-      
-  MyEC2InstanceProfile:
+      Description: Beanstalk EC2 role
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+
+  BeanQuizInstanceProfile:
     Type: AWS::IAM::InstanceProfile
-    Properties:
-      Path: "/"
+    Properties: 
       Roles:
-        - !Ref MyEC2InstanceRole
-
-
-  MyEC2Instance:
-    Type: AWS::EC2::Instance
-    Properties:
-      SecurityGroupIds:
-        - !Ref MyEC2InstanceSecurityGroup
-      ImageId: ami-0fc3317b37c1269d3
-      IamInstanceProfile: !Ref MyEC2InstanceProfile
-      InstanceType: t2.micro
-      SubnetId: !Ref PublicSubnet
-      KeyName: !Ref KeyName
-      UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash
-          mkdir /myapp
-          cd /myapp
-          sudo dnf update
-          sudo dnf install java-21-amazon-corretto
-          sudo dnf install java-21-amazon-corretto-devel
-          aws s3 cp s3://bean-quiz-bucket/demo-0.0.1-SNAPSHOT.jar .
-          chmod -R 777 ./
-          java -jar demo-0.0.1-SNAPSHOT.jar
+        - !Ref BeanQuizInstanceRole
 
 Outputs:
-  SpringBootEC2IP:
-    Description: IP address of the Spring Boot EC2 instance
-    Value: !GetAtt MyEC2Instance.PublicIp
+  BeanstalkEnvironmentDomain:
+    Description: "Elastic Beanstalk Environment Domain"
+    Value: !GetAtt BeanQuizApplicationEnvironment.EndpointURL
   RDSInstanceEndpoint:
     Description: Endpoint of the PostgreSQL RDS instance
     Value: !GetAtt MyDBInstance.Endpoint.Address
