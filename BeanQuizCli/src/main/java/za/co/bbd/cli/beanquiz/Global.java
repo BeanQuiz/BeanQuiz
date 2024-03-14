@@ -28,9 +28,11 @@ public class Global {
             new LoginCommand(),
             new LogoutCommand(),
             new PlayCommand(),
-            new ViewQuizHistoryCommand(),
+            new ProfileCommand(),
             new QuitCommand()
     );
 
     public static List<Command> commands = defaultCommands;
+
+    public static final Scanner scanner = new Scanner(System.in);
 }

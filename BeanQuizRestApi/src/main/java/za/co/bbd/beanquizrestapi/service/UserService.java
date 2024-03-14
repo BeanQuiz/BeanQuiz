@@ -70,4 +70,10 @@ public class UserService {
             userRepository.save(userEntity);
         }
     }
+
+    public void updateUsername(Integer userID, String username) {
+        UserEntity userEntity = userRepository.findById(userID).orElseThrow(() -> new BusinessException("Unable to find user.", HttpStatus.NOT_FOUND));
+        userEntity.setUsername(username);
+        userRepository.save(userEntity);
+    }
 }
