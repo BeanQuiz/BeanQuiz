@@ -1,4 +1,5 @@
 To install (only linux machines):
+---------------------------------------------
 
 sudo dpkg -i beanquiz_1.0_amd64.deb
 
@@ -9,3 +10,14 @@ export PATH=$PATH:/opt/beanquiz/bin
 Then run below cmd on your terminal
 
 beanquiz
+
+###############################################
+
+To install (only linux machines):
+---------------------------------------------
+                                       
+Run the exe to install
+
+Run program after install
+
+----------------------------------------------
