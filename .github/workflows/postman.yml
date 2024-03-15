@@ -13,7 +13,7 @@ jobs:
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
       - name: Run API tests
-      - env:
+        env:
           baseURL: ${{ secrets.BASE_URL }}
         run: |
           postman collection run "32365977-93eaaa1e-0b14-435c-b732-6c1de6b864f2" -e "32365977-208c5988-d0af-4ae1-8ae9-6d099220ebbe"
