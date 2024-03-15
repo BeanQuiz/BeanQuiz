@@ -113,3 +113,13 @@ jobs:
           asset_name: beanquiz-1.0.exe
           asset_content_type: application/x-executable
 
+      - name: Upload Instruction File
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: BeanQuizCli/instructions.txt
+          asset_name: instruction.txt
+          asset_content_type: text/plain
+
