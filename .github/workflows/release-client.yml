@@ -31,7 +31,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
             tag_name: v${{ github.run_number }}
-            release_name: Release ${{ github.run_number }}
+            release_name: Linux Release ${{ github.run_number }}
             draft: false
             prerelease: false
       
@@ -86,11 +86,22 @@ jobs:
           cd BeanQuizCli
           mvn package
           jpackage --input target --name beanquiz --main-jar BeanQuizCli-1.0-SNAPSHOT.jar --type exe --win-console
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            tag_name: v${{ github.run_number }}
+            release_name: Windows Release ${{ github.run_number }}
+            draft: false
+            prerelease: false
             
       - name: Upload installer
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ needs.build-linux-installer.release_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: BeanQuizCli/beanquiz-1.0.exe
           asset_name: beanquiz-1.0.exe
           asset_content_type: application/x-executable
