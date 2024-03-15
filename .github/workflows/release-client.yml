@@ -5,6 +5,7 @@ on:
       branches: [ "main" ]
       paths:
         - 'BeanQuizCli/**'
+        - '.github/workflows/release-client'
     workflow_dispatch:
 
 jobs:
@@ -85,7 +86,11 @@ jobs:
         run: |
           cd BeanQuizCli
           mvn package
-          jpackage --input target --name beanquiz --main-jar BeanQuizCli-1.0-SNAPSHOT.jar --type exe --win-console
+          jpackage --input target --name beanquiz --main-jar BeanQuizCli-1.0-SNAPSHOT.jar --type exe --win-console `
+            --win-dir-chooser `
+            --win-menu `
+            --win-shortcut `
+            --win-shortcut-prompt
 
       - name: Create Release
         id: create_release
